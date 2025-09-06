@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password & File Protector</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container fade-in">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('password-gen')">Password Generator</button>
+            <button class="tab-btn" onclick="openTab('password-protect')">Password Protector</button>
+            <button class="tab-btn" onclick="openTab('file-protect')">File Protector</button>
+        </div>
+
+        <!-- Page 1: Random Password Generator -->
+        <div id="password-gen" class="tab-content active slide-in">
+            <h2>Random Password Generator</h2>
+            <button onclick="generatePassword()">Generate Password</button>
+            <div class="output-box" id="generated-password"></div>
+            <button onclick="copyToClipboard('generated-password')">Copy</button>
+        </div>
+
+        <!-- Page 2: Password Protector -->
+        <div id="password-protect" class="tab-content slide-in">
+            <h2>Password Protector</h2>
+            <div class="section">
+                <h3>Encrypt Password</h3>
+                <input type="text" id="encrypt-input" placeholder="Enter text to encrypt">
+                <input type="password" id="encrypt-key" placeholder="Enter password">
+                <button onclick="encryptPassword()">Encrypt</button>
+                <div class="output-box" id="encrypted-output"></div>
+                <button onclick="copyToClipboard('encrypted-output')">Copy</button>
+            </div>
+            <div class="section">
+                <h3>Decrypt Password</h3>
+                <input type="text" id="decrypt-input" placeholder="Enter encrypted text">
+                <input type="password" id="decrypt-key" placeholder="Enter password">
+                <button onclick="decryptPassword()">Decrypt</button>
+                <div class="output-box" id="decrypted-output"></div>
+                <button onclick="copyToClipboard('decrypted-output')">Copy</button>
+            </div>
+        </div>
+
+        <!-- Page 3: File Protector -->
+        <div id="file-protect" class="tab-content slide-in">
+            <h2>File Protector</h2>
+            <div class="section">
+                <h3>Encrypt File</h3>
+                <input type="file" id="encrypt-file-input">
+                <input type="password" id="encrypt-file-key" placeholder="Enter password">
+                <button id="encrypt-file-btn" onclick="encryptFile()">Encrypt File</button>
+                <div class="output-box" id="encrypted-file-output">Encrypted file will appear here</div>
+                <button id="download-encrypted-btn" style="display: none;" onclick="downloadEncryptedFile()">Download Encrypted File</button>
+            </div>
+            <div class="section">
+                <h3>Decrypt File</h3>
+                <input type="file" id="decrypt-file-input">
+                <input type="password" id="decrypt-file-key" placeholder="Enter password">
+                <button id="decrypt-file-btn" onclick="decryptFile()">Decrypt File</button>
+                <div class="output-box" id="decrypted-file-output">Decrypted file will appear here</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
