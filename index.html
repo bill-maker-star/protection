@@ -1,71 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password & File Protector</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password & File Protector</title>
+
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <!-- JSZip for zip/unzip -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
-    <div class="container fade-in">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('password-gen')">Password Generator</button>
-            <button class="tab-btn" onclick="openTab('password-protect')">Password Protector</button>
-            <button class="tab-btn" onclick="openTab('file-protect')">File Protector</button>
-        </div>
-
-        <!-- Page 1: Random Password Generator -->
-        <div id="password-gen" class="tab-content active slide-in">
-            <h2>Random Password Generator</h2>
-            <button onclick="generatePassword()">Generate Password</button>
-            <div class="output-box" id="generated-password"></div>
-            <button onclick="copyToClipboard('generated-password')">Copy</button>
-        </div>
-
-        <!-- Page 2: Password Protector -->
-        <div id="password-protect" class="tab-content slide-in">
-            <h2>Password Protector</h2>
-            <div class="section">
-                <h3>Encrypt Password</h3>
-                <input type="text" id="encrypt-input" placeholder="Enter text to encrypt">
-                <input type="password" id="encrypt-key" placeholder="Enter password">
-                <button onclick="encryptPassword()">Encrypt</button>
-                <div class="output-box" id="encrypted-output"></div>
-                <button onclick="copyToClipboard('encrypted-output')">Copy</button>
-            </div>
-            <div class="section">
-                <h3>Decrypt Password</h3>
-                <input type="text" id="decrypt-input" placeholder="Enter encrypted text">
-                <input type="password" id="decrypt-key" placeholder="Enter password">
-                <button onclick="decryptPassword()">Decrypt</button>
-                <div class="output-box" id="decrypted-output"></div>
-                <button onclick="copyToClipboard('decrypted-output')">Copy</button>
-            </div>
-        </div>
-
-        <!-- Page 3: File Protector -->
-        <div id="file-protect" class="tab-content slide-in">
-            <h2>File Protector</h2>
-            <div class="section">
-                <h3>Encrypt File</h3>
-                <input type="file" id="encrypt-file-input">
-                <input type="password" id="encrypt-file-key" placeholder="Enter password">
-                <button id="encrypt-file-btn" onclick="encryptFile()">Encrypt File</button>
-                <div class="output-box" id="encrypted-file-output">Encrypted file will appear here</div>
-                <button id="download-encrypted-btn" style="display: none;" onclick="downloadEncryptedFile()">Download Encrypted File</button>
-            </div>
-            <div class="section">
-                <h3>Decrypt File</h3>
-                <input type="file" id="decrypt-file-input">
-                <input type="password" id="decrypt-file-key" placeholder="Enter password">
-                <button id="decrypt-file-btn" onclick="decryptFile()">Decrypt File</button>
-                <div class="output-box" id="decrypted-file-output">Decrypted file will appear here</div>
-            </div>
-        </div>
+  <div class="container fade-in">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="openTab('password-gen')">Password Generator</button>
+      <button class="tab-btn" onclick="openTab('password-protect')">Password Protector</button>
+      <button class="tab-btn" onclick="openTab('file-protect')">File Protector</button>
+      <button class="tab-btn" onclick="openTab('folder-protect')">Folder Protect</button>
     </div>
 
-    <script src="script.js"></script>
-</body>
+    <!-- Page 1: Random Password Generator -->
+    <div id="password-gen" class="tab-content active slide-in">
+      <h2>Random Password Generator</h2>
+      <button onclick="generatePassword()">Generate Password</button>
+      <div class="output-box" id="generated-password"></div>
+      <button onclick="copyToClipboard('generated-password')">Copy</button>
+    </div>
 
+    <!-- Page 2: Password Protector (text) -->
+    <div id="password-protect" class="tab-content slide-in">
+      <h2>Password Protector</h2>
+
+      <div class="section">
+        <h3>Encrypt Password</h3>
+        <input type="text" id="encrypt-input" placeholder="Enter password/text"/>
+        <button onclick="encryptText()">Encrypt</button>
+        <div class="output-box" id="encrypted-output"></div>
+        <button onclick="copyToClipboard('encrypted-output')">Copy</button>
+      </div>
+
+      <div class="section">
+        <h3>Decrypt Password</h3>
+        <input type="text" id="decrypt-input" placeholder="Enter encrypted (base64)"/>
+        <button onclick="decryptText()">Decrypt</button>
+        <div class="output-box" id="decrypted-output"></div>
+        <button onclick="copyToClipboard('decrypted-output')">Copy</button>
+      </div>
+    </div>
+
+    <!-- Page 3: File Protector -->
+    <div id="file-protect" class="tab-content slide-in">
+      <h2>File Protector</h2>
+
+      <div class="section">
+        <h3>Encrypt File</h3>
+        <input type="file" id="file-encrypt-input"/>
+        <input type="password" id="file-encrypt-key" placeholder="Enter password"/>
+        <button onclick="encryptFile()">Encrypt File</button>
+        <div class="output-box" id="file-encrypt-status"></div>
+      </div>
+
+      <div class="section">
+        <h3>Decrypt File</h3>
+        <input type="file" id="file-decrypt-input"/>
+        <input type="password" id="file-decrypt-key" placeholder="Enter password"/>
+        <button onclick="decryptFile()">Decrypt File</button>
+        <div class="output-box" id="file-decrypt-status"></div>
+      </div>
+    </div>
+
+    <!-- Page 4: Folder Protector -->
+    <div id="folder-protect" class="tab-content slide-in">
+      <h2>Folder Protector</h2>
+
+      <div class="section">
+        <h3>Encrypt</h3>
+
+        <label>Source Type</label>
+        <select id="enc-source-type" onchange="onEncSourceTypeChange()">
+          <option value="folder">Folder</option>
+          <option value="zip">ZIP</option>
+        </select>
+
+        <div id="enc-folder-wrap">
+          <input type="file" id="enc-folder-input" webkitdirectory directory multiple />
+        </div>
+        <div id="enc-zip-wrap" style="display:none">
+          <input type="file" id="enc-zip-input" accept=".zip"/>
+        </div>
+
+        <input type="password" id="enc-folder-key" placeholder="Enter password"/>
+        <button id="enc-folder-btn" onclick="encryptFolderOrZip()">Encrypt</button>
+        <div class="output-box" id="enc-folder-output">Encrypted ZIP will appear here</div>
+        <button id="download-enc-zip-btn" style="display:none" onclick="downloadEncZip()">Download ZIP</button>
+      </div>
+
+      <div class="section">
+        <h3>Decrypt</h3>
+
+        <label>Source Type</label>
+        <select id="dec-source-type">
+          <option value="enczip">Encrypted ZIP</option>
+          <option value="zip">Normal ZIP</option>
+        </select>
+
+        <input type="file" id="dec-zip-input" accept=".zip"/>
+        <input type="password" id="dec-folder-key" placeholder="Enter password"/>
+        <button id="dec-folder-btn" onclick="decryptFolderOrZip()">Decrypt</button>
+        <div class="output-box" id="dec-folder-output">Decrypted ZIP will appear here</div>
+        <button id="download-dec-zip-btn" style="display:none" onclick="downloadDecZip()">Download ZIP</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>
